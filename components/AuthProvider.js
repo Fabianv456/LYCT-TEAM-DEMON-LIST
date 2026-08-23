@@ -25,6 +25,8 @@ export function AuthProvider({ children }) {
       setProfile(data || null);
     } catch {
       setProfile(null);
+    } finally {
+      setLoading(false);
     }
   }
 
