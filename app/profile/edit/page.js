@@ -36,6 +36,12 @@ export default function EditProfilePage() {
     }
   }, [profile]);
 
+  useEffect(() => {
+    if (!authLoading && user && !profile) {
+      setError("No se pudo cargar tu perfil. Intentá recargar.");
+    }
+  }, [authLoading, user, profile]);
+
   async function handleAvatarUpload(file) {
     if (!file || !user) return null;
     setUploading(true);

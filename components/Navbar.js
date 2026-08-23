@@ -36,7 +36,7 @@ export default function Navbar() {
               Perfil
             </Link>
           )}
-          {isStaff && (
+          {(isStaff || isAdmin) && (
             <Link href="/mod" className="rounded-lg px-3 py-2 text-sm text-zinc-300 transition hover:bg-base-800 hover:text-white">
               Moderación
             </Link>
@@ -91,7 +91,7 @@ export default function Navbar() {
           {user && (
             <Link href={`/profile/${profile?.username}`} className="block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-base-800">Perfil</Link>
           )}
-          {isStaff && (
+          {(isStaff || isAdmin) && (
             <Link href="/mod" className="block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-base-800">Moderación</Link>
           )}
           {profile?.role === "admin" && (

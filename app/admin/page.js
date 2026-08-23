@@ -33,13 +33,20 @@ export default function AdminPage() {
 
   async function loadDemons() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("demons")
-      .select("*")
-      .order("position", { ascending: true });
+    setError("");
+    try {
+      const { data, error } = await supabase
+        .from("demons")
+        .select("*")
+        .order("position", { ascending: true });
 
-    if (!error) setDemons(data || []);
-    setLoading(false);
+      if (error) throw error;
+      setDemons(data || []);
+    } catch (err) {
+      setError(err.message || "Error al cargar los niveles.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {

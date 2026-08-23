@@ -17,7 +17,7 @@ const PAGE_SIZE = 10;
 export default function ModPage() {
   const supabase = supabaseBrowser();
   const router = useRouter();
-  const { user, profile, isStaff, loading: authLoading } = useAuth();
+  const { user, profile, isStaff, isAdmin, loading: authLoading } = useAuth();
 
   const [activeTab, setActiveTab] = useState("all");
   const [items, setItems] = useState([]);
@@ -30,8 +30,8 @@ export default function ModPage() {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    if (!authLoading && (!user || !isStaff)) router.push("/");
-  }, [authLoading, user, isStaff, router]);
+    if (!authLoading && !isStaff && !isAdmin) router.push("/");
+  }, [authLoading, isStaff, isAdmin, router]);
 
   async function loadStats() {
     try {
@@ -92,12 +92,12 @@ export default function ModPage() {
   }
 
   useEffect(() => {
-    if (isStaff) {
+    if (isStaff || isAdmin) {
       loadStats();
       loadItems();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isStaff, activeTab, page]);
+  }, [isStaff, isAdmin, activeTab, page]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
