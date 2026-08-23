@@ -33,9 +33,13 @@ export default function SubmitPage() {
 
   useEffect(() => {
     async function loadDemons() {
-      const { data } = await supabase.from("demons").select("id, name, position").order("position");
-      setDemons(data || []);
-      if (data?.length) setDemonId(data[0].id);
+      try {
+        const { data } = await supabase.from("demons").select("id, name, position").order("position");
+        setDemons(data || []);
+        if (data?.length) setDemonId(data[0].id);
+      } catch (err) {
+        setError("Error al cargar los niveles: " + (err.message || err));
+      }
     }
     loadDemons();
   }, [supabase]);
@@ -43,12 +47,16 @@ export default function SubmitPage() {
   useEffect(() => {
     async function loadSubmissions() {
       if (!user) return;
-      const { data } = await supabase
-        .from("submissions")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      setUserSubmissions(data || []);
+      try {
+        const { data } = await supabase
+          .from("submissions")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+        setUserSubmissions(data || []);
+      } catch (err) {
+        console.error("Error loading submissions:", err);
+      }
     }
     loadSubmissions();
   }, [user, supabase, success]);

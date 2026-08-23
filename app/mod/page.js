@@ -44,24 +44,27 @@ export default function ModPage() {
 
   async function loadItems() {
     setLoading(true);
-    let query = supabase
-      .from("submissions")
-      .select("*", { count: "exact" })
-      .order("created_at", { ascending: true });
+    setError("");
+    try {
+      let query = supabase
+        .from("submissions")
+        .select("*", { count: "exact" })
+        .order("created_at", { ascending: true });
 
-    if (activeTab !== "all") {
-      query = query.eq("status", activeTab);
-    }
+      if (activeTab !== "all") {
+        query = query.eq("status", activeTab);
+      }
 
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
-      query = query.or(`gd_username.ilike.%${q}%,comment.ilike.%${q}%`);
-    }
+      if (search.trim()) {
+        const q = search.trim().toLowerCase();
+        query = query.or(`gd_username.ilike.%${q}%,comment.ilike.%${q}%`);
+      }
 
-    const from = (page - 1) * PAGE_SIZE;
-    const { data, error, count } = await query.range(from, from + PAGE_SIZE - 1);
+      const from = (page - 1) * PAGE_SIZE;
+      const { data, error, count } = await query.range(from, from + PAGE_SIZE - 1);
 
-    if (!error) {
+      if (error) throw error;
+
       const demonIds = Array.from(new Set((data || []).map((s) => s.demon_id).filter(Boolean)));
       const userIds = Array.from(new Set((data || []).map((s) => s.user_id).filter(Boolean)));
       const [{ data: demons }, { data: profiles }] = await Promise.all([
@@ -87,8 +90,11 @@ export default function ModPage() {
       });
       setItems(normalized);
       setTotal(count || 0);
+    } catch (err) {
+      setError(err.message || "Error al cargar las submissions.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
