@@ -8,7 +8,7 @@ import { useTheme } from "@/components/ThemeProvider";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const { user, profile, isStaff, loading, logout } = useAuth();
+  const { user, profile, isStaff, isAdmin, loading, logout } = useAuth();
   const { theme, toggle } = useTheme();
 
   return (
