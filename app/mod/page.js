@@ -34,8 +34,12 @@ export default function ModPage() {
   }, [authLoading, user, isStaff, router]);
 
   async function loadStats() {
-    const { data } = await supabase.rpc("get_moderation_stats");
-    if (data?.length) setStats(data[0]);
+    try {
+      const { data } = await supabase.rpc("get_moderation_stats");
+      if (data?.length) setStats(data[0]);
+    } catch (err) {
+      console.error("Error loading moderation stats:", err);
+    }
   }
 
   async function loadItems() {

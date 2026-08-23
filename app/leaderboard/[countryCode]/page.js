@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { supabaseBrowser } from "@/lib/supabaseClient";
 import Avatar from "@/components/Avatar";
@@ -28,36 +28,30 @@ function LeaderboardCard({ player, rank }) {
       </div>
 
       <div className="flex-none text-right">
-        <p className="font-display text-lg font-bold text-white">{player.total_points.toLocaleString()}</p>
-        <p className="text-xs text-zinc-500">{player.completed_demons_count} ED</p>
+        <p className="font-display text-lg font-bold text-white">{(player.total_points || 0).toLocaleString()}</p>
+        <p className="text-xs text-zinc-500">{player.completed_demons_count || 0} ED</p>
       </div>
     </div>
   );
 }
 
-export default function CountryLeaderboardPage({ params }) {
+export default function CountryLeaderboardPage() {
   const supabase = supabaseBrowser();
   const router = useRouter();
-  const [countryCode, setCountryCode] = useState("");
+  const params = useParams();
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [countryName, setCountryName] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
-    let code = params?.countryCode;
-    if (!code && typeof window !== "undefined") {
-      const path = window.location.pathname;
-      const match = path.match(/\/leaderboard\/([^\/]+)/);
-      code = match ? match[1] : "";
-    }
-    if (!code) return;
-    setCountryCode(code);
-
     async function load() {
       setLoading(true);
       setError("");
       try {
+        const code = params?.countryCode;
+        if (!code) return;
+
         const country = COUNTRIES.find((c) => c.code === code);
         setCountryName(country ? `${country.flag} ${country.name}` : code);
 
@@ -95,7 +89,7 @@ export default function CountryLeaderboardPage({ params }) {
       ) : (
         <div className="grid gap-3">
           {players.map((player) => (
-            <LeaderboardCard key={player.id} player={player} rank={player.rank} showCountry={false} />
+            <LeaderboardCard key={player.id} player={player} rank={player.rank} />
           ))}
         </div>
       )}

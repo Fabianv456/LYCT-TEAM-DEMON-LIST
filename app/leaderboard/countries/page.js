@@ -75,8 +75,8 @@ export default function CountriesLeaderboardPage() {
                 </p>
               </div>
               <div className="flex-none text-right">
-                <p className="font-display text-lg font-bold text-white">{country.total_points.toLocaleString()}</p>
-                <p className="text-xs text-zinc-500">{country.completed_demons_count} ED</p>
+                <p className="font-display text-lg font-bold text-white">{(country.total_points || 0).toLocaleString()}</p>
+                <p className="text-xs text-zinc-500">{country.completed_demons_count || 0} ED</p>
               </div>
             </Link>
           ))}

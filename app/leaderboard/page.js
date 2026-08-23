@@ -27,8 +27,8 @@ function LeaderboardCard({ player, rank }) {
       </div>
 
       <div className="flex-none text-right">
-        <p className="font-display text-lg font-bold text-white">{player.total_points.toLocaleString()}</p>
-        <p className="text-xs text-zinc-500">{player.completed_demons_count} ED</p>
+        <p className="font-display text-lg font-bold text-white">{(player.total_points || 0).toLocaleString()}</p>
+        <p className="text-xs text-zinc-500">{player.completed_demons_count || 0} ED</p>
       </div>
     </div>
   );

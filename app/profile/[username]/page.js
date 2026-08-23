@@ -16,34 +16,41 @@ export default function ProfilePage() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("username", decodeURIComponent(username))
-        .single();
-
-      if (profileData) {
-        const { data: completionsData } = await supabase
-          .from("completions")
+      try {
+        const decodedUsername = decodeURIComponent(username);
+        const { data: profileData } = await supabase
+          .from("profiles")
           .select("*")
-          .eq("user_id", profileData.id)
-          .order("demon_position", { ascending: true });
-        setCompletions(completionsData || []);
-
-        const { data: rankData } = await supabase
-          .from("global_leaderboard")
-          .select("rank")
-          .eq("id", profileData.id)
+          .eq("username", decodedUsername)
           .single();
 
-        setProfile({
-          ...profileData,
-          rank: rankData?.rank || null,
-        });
-      } else {
+        if (profileData) {
+          const { data: completionsData } = await supabase
+            .from("completions")
+            .select("*")
+            .eq("user_id", profileData.id)
+            .order("demon_position", { ascending: true });
+          setCompletions(completionsData || []);
+
+          const { data: rankData } = await supabase
+            .from("global_leaderboard")
+            .select("rank")
+            .eq("id", profileData.id)
+            .single();
+
+          setProfile({
+            ...profileData,
+            rank: rankData?.rank || null,
+          });
+        } else {
+          setProfile(null);
+        }
+      } catch (err) {
+        console.error("Error loading profile:", err);
         setProfile(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     if (username) load();
   }, [username, supabase]);
