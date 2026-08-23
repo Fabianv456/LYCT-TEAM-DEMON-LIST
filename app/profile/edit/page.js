@@ -88,27 +88,28 @@ export default function EditProfilePage() {
       return;
     }
 
-    const updates = {
-      username: username.trim(),
-      gd_username: gdUsername.trim() || null,
-      country_code: countryCode || null,
-      avatar_url: avatarUrl || null,
-    };
+    try {
+      const updates = {
+        username: username.trim(),
+        gd_username: gdUsername.trim() || null,
+        country_code: countryCode || null,
+        avatar_url: avatarUrl || null,
+      };
 
-    const { error } = await supabase
-      .from("profiles")
-      .update(updates)
-      .eq("id", user.id);
+      const { error } = await supabase
+        .from("profiles")
+        .update(updates)
+        .eq("id", user.id);
 
-    setSaving(false);
+      if (error) throw error;
 
-    if (error) {
-      setError(error.message);
-      return;
+      setSuccess("Perfil actualizado correctamente.");
+      refreshProfile();
+    } catch (err) {
+      setError(err.message || "Error al guardar el perfil.");
+    } finally {
+      setSaving(false);
     }
-
-    setSuccess("Perfil actualizado correctamente.");
-    refreshProfile();
   }
 
   if (authLoading || !user) {

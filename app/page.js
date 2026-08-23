@@ -16,15 +16,21 @@ export default function HomePage() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      let query = supabase.from("demons").select("*").order("position", { ascending: true });
+      try {
+        let query = supabase.from("demons").select("*").order("position", { ascending: true });
 
-      if (difficulty !== "all") {
-        query = query.eq("difficulty", difficulty);
+        if (difficulty !== "all") {
+          query = query.eq("difficulty", difficulty);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+        setDemons(data || []);
+      } catch (err) {
+        console.error("Error loading demons:", err);
+      } finally {
+        setLoading(false);
       }
-
-      const { data } = await query;
-      setDemons(data || []);
-      setLoading(false);
     }
     load();
   }, [supabase, difficulty]);

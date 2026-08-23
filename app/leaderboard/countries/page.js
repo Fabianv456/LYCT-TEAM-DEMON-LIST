@@ -12,23 +12,30 @@ export default function CountriesLeaderboardPage() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const { data } = await supabase
-        .from("country_leaderboard")
-        .select("country_code, total_points, completed_demons_count")
-        .order("total_points", { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from("country_leaderboard")
+          .select("country_code, total_points, completed_demons_count")
+          .order("total_points", { ascending: false });
 
-      if (data) {
-        const countryMap = new Map();
-        data.forEach((row) => {
-          const existing = countryMap.get(row.country_code);
-          if (!existing || row.total_points > existing.total_points) {
-            countryMap.set(row.country_code, row);
-          }
-        });
-        const unique = Array.from(countryMap.values());
-        setCountries(unique);
+        if (error) throw error;
+
+        if (data) {
+          const countryMap = new Map();
+          data.forEach((row) => {
+            const existing = countryMap.get(row.country_code);
+            if (!existing || row.total_points > existing.total_points) {
+              countryMap.set(row.country_code, row);
+            }
+          });
+          const unique = Array.from(countryMap.values());
+          setCountries(unique);
+        }
+      } catch (err) {
+        console.error("Error loading countries leaderboard:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     load();
   }, [supabase]);

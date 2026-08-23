@@ -10,29 +10,45 @@ import { COUNTRIES } from "@/components/CountrySelector";
 export default function CountryLeaderboardPage({ params }) {
   const supabase = supabaseBrowser();
   const router = useRouter();
-  const { countryCode } = params;
-
+  const [countryCode, setCountryCode] = useState("");
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [countryName, setCountryName] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
+    let code = params?.countryCode;
+    if (!code && typeof window !== "undefined") {
+      const path = window.location.pathname;
+      const match = path.match(/\/leaderboard\/([^\/]+)/);
+      code = match ? match[1] : "";
+    }
+    if (!code) return;
+    setCountryCode(code);
+
     async function load() {
       setLoading(true);
-      const country = COUNTRIES.find((c) => c.code === countryCode);
-      setCountryName(country ? `${country.flag} ${country.name}` : countryCode);
+      setError("");
+      try {
+        const country = COUNTRIES.find((c) => c.code === code);
+        setCountryName(country ? `${country.flag} ${country.name}` : code);
 
-      const { data } = await supabase
-        .from("country_leaderboard")
-        .select("*")
-        .eq("country_code", countryCode)
-        .order("rank", { ascending: true });
+        const { data, error } = await supabase
+          .from("country_leaderboard")
+          .select("*")
+          .eq("country_code", code)
+          .order("rank", { ascending: true });
 
-      setPlayers(data || []);
-      setLoading(false);
+        if (error) throw error;
+        setPlayers(data || []);
+      } catch (err) {
+        setError(err.message || "Error al cargar el leaderboard.");
+      } finally {
+        setLoading(false);
+      }
     }
     load();
-  }, [supabase, countryCode]);
+  }, [params, supabase]);
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -55,6 +71,8 @@ export default function CountryLeaderboardPage({ params }) {
           ))}
         </div>
       )}
+
+      {error && <p className="text-sm text-accent-red">{error}</p>}
     </div>
   );
 }

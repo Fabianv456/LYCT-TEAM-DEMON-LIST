@@ -17,13 +17,19 @@ export default function GlobalLeaderboardPage() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const { data } = await supabase
-        .from("global_leaderboard")
-        .select("*")
-        .order("rank", { ascending: true });
+      try {
+        const { data, error } = await supabase
+          .from("global_leaderboard")
+          .select("*")
+          .order("rank", { ascending: true });
 
-      setPlayers(data || []);
-      setLoading(false);
+        if (error) throw error;
+        setPlayers(data || []);
+      } catch (err) {
+        console.error("Error loading global leaderboard:", err);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, [supabase]);
