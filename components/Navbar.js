@@ -14,7 +14,12 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-40 border-b border-base-700/60 bg-base-950/80 backdrop-blur">
       <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="font-display text-lg font-bold text-white">
+        <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold text-white">
+          <img
+            src="https://images-ext-1.discordapp.net/external/uSWIfFNnti4nMJIUBKr8gkXCJYAtb-8g40zlZ6hRz6o/%3Fsize%3D2048/https/cdn.discordapp.com/icons/1471710908672905247/954f15911f52774964390a9198524b24.png?format=webp&quality=lossless&width=768&height=768"
+            alt="LYCT TEAM"
+            className="h-8 w-8 rounded-lg object-cover"
+          />
           LYCT TEAM
         </Link>
 
