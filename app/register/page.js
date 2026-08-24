@@ -35,10 +35,15 @@ export default function RegisterPage() {
           },
         },
       });
-      alert("Cuenta creada correctamente.");
+      alert("Cuenta creada correctamente. Ya podés iniciar sesión.");
       router.push("/login");
     } catch (err) {
-      setError(err.message || "Error al crear la cuenta.");
+      const msg = err.message || "Error al crear la cuenta.";
+      if (msg.includes("rate limit") || msg.includes("429") || msg.includes("security purposes")) {
+        setError("Se enviaron muchos emails de confirmación. Esperá 1 hora o deshabilitá la confirmación de email en Supabase.");
+      } else {
+        setError(msg);
+      }
       setSubmitting(false);
     }
   }
