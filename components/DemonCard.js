@@ -43,7 +43,7 @@ export default function DemonCard({ demon }) {
           <h3 className="truncate font-display text-base font-semibold text-white transition group-hover:text-accent-cyan">
             {demon.name}
           </h3>
-          <p className="truncate text-sm text-zinc-400">por {demon.creator}</p>
+          <p className="truncate text-sm text-white">por {demon.creator}</p>
           <div className="mt-1 flex flex-wrap items-center justify-start gap-2">
             <span className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${difficultyColor[demon.difficulty] || "text-zinc-300 border-base-700"}`}>
               {demon.difficulty}

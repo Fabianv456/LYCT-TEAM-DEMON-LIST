@@ -24,30 +24,30 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden items-center gap-1 sm:flex">
-          <Link href="/#lista" className="rounded-lg px-3 py-2 text-sm text-zinc-300 transition hover:bg-base-800 hover:text-white">
+          <Link href="/#lista" className="rounded-lg px-3 py-2 text-sm text-white transition hover:bg-base-800 hover:text-white">
             Demon List
           </Link>
-          <Link href="/leaderboard" className="rounded-lg px-3 py-2 text-sm text-zinc-300 transition hover:bg-base-800 hover:text-white">
+          <Link href="/leaderboard" className="rounded-lg px-3 py-2 text-sm text-white transition hover:bg-base-800 hover:text-white">
             Leaderboard
           </Link>
-          <Link href="/leaderboard/countries" className="rounded-lg px-3 py-2 text-sm text-zinc-300 transition hover:bg-base-800 hover:text-white">
+          <Link href="/leaderboard/countries" className="rounded-lg px-3 py-2 text-sm text-white transition hover:bg-base-800 hover:text-white">
             Por País
           </Link>
-          <Link href="/submit" className="rounded-lg px-3 py-2 text-sm text-zinc-300 transition hover:bg-base-800 hover:text-white">
+          <Link href="/submit" className="rounded-lg px-3 py-2 text-sm text-white transition hover:bg-base-800 hover:text-white">
             Enviar completion
           </Link>
           {user && (
-            <Link href={`/profile/${profile?.username}`} className="rounded-lg px-3 py-2 text-sm text-zinc-300 transition hover:bg-base-800 hover:text-white">
+            <Link href={`/profile/${profile?.username}`} className="rounded-lg px-3 py-2 text-sm text-white transition hover:bg-base-800 hover:text-white">
               Perfil
             </Link>
           )}
           {(isStaff || isAdmin) && (
-            <Link href="/mod" className="rounded-lg px-3 py-2 text-sm text-zinc-300 transition hover:bg-base-800 hover:text-white">
+            <Link href="/mod" className="rounded-lg px-3 py-2 text-sm text-white transition hover:bg-base-800 hover:text-white">
               Moderación
             </Link>
           )}
           {profile?.role === "admin" && (
-            <Link href="/admin" className="rounded-lg px-3 py-2 text-sm text-accent-red transition hover:bg-base-800 hover:text-white">
+            <Link href="/admin" className="rounded-lg px-3 py-2 text-sm text-white transition hover:bg-base-800 hover:text-white">
               Administración
             </Link>
           )}
@@ -89,18 +89,18 @@ export default function Navbar() {
 
       {open && (
         <div className="space-y-1 border-t border-base-700/60 bg-base-950 px-4 py-3 sm:hidden">
-          <Link href="/#lista" className="block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-base-800">Demon List</Link>
-          <Link href="/leaderboard" className="block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-base-800">Leaderboard</Link>
-          <Link href="/leaderboard/countries" className="block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-base-800">Por País</Link>
-          <Link href="/submit" className="block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-base-800">Enviar completion</Link>
+          <Link href="/#lista" className="block rounded-lg px-3 py-2 text-sm text-white hover:bg-base-800">Demon List</Link>
+          <Link href="/leaderboard" className="block rounded-lg px-3 py-2 text-sm text-white hover:bg-base-800">Leaderboard</Link>
+          <Link href="/leaderboard/countries" className="block rounded-lg px-3 py-2 text-sm text-white hover:bg-base-800">Por País</Link>
+          <Link href="/submit" className="block rounded-lg px-3 py-2 text-sm text-white hover:bg-base-800">Enviar completion</Link>
           {user && (
-            <Link href={`/profile/${profile?.username}`} className="block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-base-800">Perfil</Link>
+            <Link href={`/profile/${profile?.username}`} className="block rounded-lg px-3 py-2 text-sm text-white hover:bg-base-800">Perfil</Link>
           )}
           {(isStaff || isAdmin) && (
-            <Link href="/mod" className="block rounded-lg px-3 py-2 text-sm text-zinc-300 hover:bg-base-800">Moderación</Link>
+            <Link href="/mod" className="block rounded-lg px-3 py-2 text-sm text-white hover:bg-base-800">Moderación</Link>
           )}
           {profile?.role === "admin" && (
-            <Link href="/admin" className="block rounded-lg px-3 py-2 text-sm text-accent-red hover:bg-base-800">Administración</Link>
+            <Link href="/admin" className="block rounded-lg px-3 py-2 text-sm text-white hover:bg-base-800">Administración</Link>
           )}
           <button onClick={toggle} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-zinc-300 hover:bg-base-800">
             {theme === "dark" ? "☀️ Tema claro" : "🌙 Tema oscuro"}
