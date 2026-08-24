@@ -217,8 +217,8 @@ export default function ModPage() {
             onClick={() => { setActiveTab(tab.key); setPage(1); }}
             className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
               activeTab === tab.key
-                ? "bg-base-800 text-white shadow-sm"
-                : "text-zinc-400 hover:text-white"
+                ? "bg-accent-gradient text-white shadow-glow"
+                : "text-base-600 hover:text-white hover:bg-base-800"
             }`}
           >
             {tab.label}
