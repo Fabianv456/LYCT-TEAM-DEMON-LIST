@@ -78,7 +78,7 @@ export function AuthProvider({ children }) {
   const refreshProfile = () => loadProfile(user?.id);
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, isStaff: profile?.role === "staff" || profile?.role === "admin", isAdmin: profile?.role === "admin", userRole: profile?.role || null, refreshProfile, signIn, signUp, logout }}>
+    <AuthContext.Provider value={{ user, profile, loading, isStaff: profile?.role === "moderator" || profile?.role === "admin", isAdmin: profile?.role === "admin", userRole: profile?.role || null, refreshProfile, signIn, signUp, logout }}>
       {children}
     </AuthContext.Provider>
   );
