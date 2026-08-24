@@ -5,13 +5,16 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { supabaseBrowser } from "@/lib/supabaseClient";
 import Avatar from "@/components/Avatar";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function ProfilePage() {
   const { username } = useParams();
   const supabase = supabaseBrowser();
+  const { user, profile: authProfile, isStaff, isAdmin } = useAuth();
   const [profile, setProfile] = useState(null);
   const [completions, setCompletions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [revokingId, setRevokingId] = useState(null);
 
   useEffect(() => {
     async function load() {
@@ -67,6 +70,37 @@ export default function ProfilePage() {
     ? String.fromCodePoint(...[...profile.country_code].map(c => 0x1F1E6 + c.charCodeAt(0) - 65))
     : "";
 
+  async function handleRevoke(completion) {
+    if (!confirm(`¿Estás seguro de que querés revocar la completion de "#${completion.demon_position} ${completion.demon_name}"? Se quitarán los puntos automáticamente.`)) return;
+    
+    setRevokingId(completion.id);
+    try {
+      const { error } = await supabase
+        .from("submissions")
+        .update({
+          status: "rejected",
+          rejection_reason: "Revocado por moderador",
+          reviewed_by: user.id,
+          reviewed_at: new Date().toISOString(),
+        })
+        .eq("id", completion.id)
+        .eq("status", "approved");
+
+      if (error) throw error;
+
+      setCompletions((prev) => prev.filter((c) => c.id !== completion.id));
+      setProfile((prev) => ({
+        ...prev,
+        total_points: Math.max(0, (prev.total_points || 0) - (completion.points || 100)),
+        completed_demons_count: Math.max(0, (prev.completed_demons_count || 0) - 1),
+      }));
+    } catch (err) {
+      alert("Error al revocar: " + (err.message || err));
+    } finally {
+      setRevokingId(null);
+    }
+  }
+
   return (
     <div className="animate-fade-in space-y-6">
       <div className="card-gradient-border flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-start">
@@ -114,14 +148,24 @@ export default function ProfilePage() {
         ) : (
           <div className="grid gap-2">
             {completions.map((c) => (
-              <Link
+              <div
                 key={c.id}
-                href={`/demon/${c.demon_id}`}
-                className="flex items-center justify-between rounded-xl border border-base-700/60 bg-base-900 px-4 py-3 transition hover:border-accent-cyan/60"
+                className="card-gradient-border flex items-center justify-between px-4 py-3 transition"
               >
-                <span className="text-sm text-white">#{c.demon_position} — {c.demon_name}</span>
-                <span className="text-xs text-zinc-500">{new Date(c.created_at).toLocaleDateString()}</span>
-              </Link>
+                <Link href={`/demon/${c.demon_id}`} className="flex-1 min-w-0">
+                  <span className="text-sm text-white">#{c.demon_position} — {c.demon_name}</span>
+                  <span className="text-xs text-zinc-500 ml-2">{new Date(c.created_at).toLocaleDateString()}</span>
+                </Link>
+                {(isStaff || isAdmin) && (
+                  <button
+                    onClick={() => handleRevoke(c)}
+                    disabled={revokingId === c.id}
+                    className="ml-3 rounded-lg border border-accent-red px-3 py-1.5 text-xs font-medium text-accent-red transition hover:bg-accent-red/10 disabled:opacity-50"
+                  >
+                    {revokingId === c.id ? "Revocando..." : "Revocar"}
+                  </button>
+                )}
+              </div>
             ))}
           </div>
         )}

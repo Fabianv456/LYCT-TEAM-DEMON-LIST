@@ -215,10 +215,10 @@ export default function ModPage() {
           <button
             key={tab.key}
             onClick={() => { setActiveTab(tab.key); setPage(1); }}
-            className={`flex-1 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
+            className={`flex-1 rounded-lg px-3 py-2.5 text-sm font-semibold text-white transition ${
               activeTab === tab.key
-                ? "bg-accent-gradient text-white shadow-glow"
-                : "text-base-600 hover:text-white hover:bg-base-800"
+                ? "bg-accent-gradient shadow-glow"
+                : "hover:bg-base-800"
             }`}
           >
             {tab.label}
