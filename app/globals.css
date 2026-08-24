@@ -4,30 +4,76 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap");
 
+:root {
+  --base-950: #f8fafc;
+  --base-900: #f1f5f9;
+  --base-800: #e2e8f0;
+  --base-700: #cbd5e1;
+  --base-600: #94a3b8;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent-cyan: #06b6d4;
+  --accent-blue: #2563eb;
+  --accent-red: #dc2626;
+  --accent-emerald: #059669;
+  --accent-yellow: #d97706;
+  --accent-orange: #ea580c;
+  --accent-purple: #9333ea;
+  --accent-gradient: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+  --glow: 0 0 25px rgba(59, 130, 246, 0.25);
+  --glow-red: 0 0 25px rgba(220, 38, 38, 0.25);
+}
+
+.dark {
+  --base-950: #020617;
+  --base-900: #0f172a;
+  --base-800: #1e293b;
+  --base-700: #334155;
+  --base-600: #475569;
+  --text-primary: #f8fafc;
+  --text-secondary: #e4e4e7;
+  --text-muted: #a1a1aa;
+  --accent-cyan: #22d3ee;
+  --accent-blue: #3b82f6;
+  --accent-red: #ef2d56;
+  --accent-emerald: #10b981;
+  --accent-yellow: #f59e0b;
+  --accent-orange: #f97316;
+  --accent-purple: #a855f7;
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #22d3ee 100%);
+  --glow: 0 0 25px rgba(59, 130, 246, 0.25);
+  --glow-red: 0 0 25px rgba(239, 45, 86, 0.25);
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: #020617;
-  color: #e4e4e7;
+  background-color: var(--base-950);
+  color: var(--text-primary);
 }
 
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: var(--base-950);
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: var(--base-700);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: var(--base-600);
 }
 
 input, textarea, select {
+  color-scheme: light;
+}
+
+.dark input, .dark textarea, .dark select {
   color-scheme: dark;
 }
 
