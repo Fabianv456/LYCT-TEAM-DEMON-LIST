@@ -54,7 +54,7 @@ export default function HomePage() {
 
   return (
     <div className="animate-fade-in space-y-8">
-      <section className="rounded-3xl border border-base-700/60 bg-base-900 p-8 text-center sm:p-12">
+      <section className="card-gradient-border card-gradient-border-lg p-8 text-center sm:p-12">
         <h1 className="font-display text-4xl font-bold text-white sm:text-5xl">
           LYCT TEAM <span className="text-accent-cyan">DEMON LIST</span>
         </h1>

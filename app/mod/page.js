@@ -192,25 +192,25 @@ export default function ModPage() {
       )}
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-2xl border border-base-700/60 bg-base-900 p-4 text-center">
-          <p className="font-display text-2xl font-bold text-yellow-400">{stats.pending}</p>
-          <p className="mt-1 text-xs text-zinc-500">Pendientes</p>
-        </div>
-        <div className="rounded-2xl border border-base-700/60 bg-base-900 p-4 text-center">
-          <p className="font-display text-2xl font-bold text-emerald-400">{stats.approved_today}</p>
-          <p className="mt-1 text-xs text-zinc-500">Aprobadas hoy</p>
-        </div>
-        <div className="rounded-2xl border border-base-700/60 bg-base-900 p-4 text-center">
-          <p className="font-display text-2xl font-bold text-accent-red">{stats.rejected_today}</p>
-          <p className="mt-1 text-xs text-zinc-500">Rechazadas hoy</p>
-        </div>
-        <div className="rounded-2xl border border-base-700/60 bg-base-900 p-4 text-center">
-          <p className="font-display text-2xl font-bold text-white">{stats.total}</p>
-          <p className="mt-1 text-xs text-zinc-500">Total</p>
-        </div>
+          <div className="card-gradient-border p-4 text-center">
+            <p className="font-display text-2xl font-bold text-yellow-400">{stats.pending}</p>
+            <p className="mt-1 text-xs text-zinc-500">Pendientes</p>
+          </div>
+          <div className="card-gradient-border p-4 text-center">
+            <p className="font-display text-2xl font-bold text-emerald-400">{stats.approved_today}</p>
+            <p className="mt-1 text-xs text-zinc-500">Aprobadas hoy</p>
+          </div>
+          <div className="card-gradient-border p-4 text-center">
+            <p className="font-display text-2xl font-bold text-accent-red">{stats.rejected_today}</p>
+            <p className="mt-1 text-xs text-zinc-500">Rechazadas hoy</p>
+          </div>
+          <div className="card-gradient-border p-4 text-center">
+            <p className="font-display text-2xl font-bold text-white">{stats.total}</p>
+            <p className="mt-1 text-xs text-zinc-500">Total</p>
+          </div>
       </div>
 
-      <div className="flex gap-1 rounded-xl border border-base-700/60 bg-base-900 p-1">
+      <div className="card-gradient-border flex gap-1 p-1">
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -236,7 +236,7 @@ export default function ModPage() {
       {loading ? (
         <div className="h-40 animate-pulse rounded-2xl bg-base-900" />
       ) : items.length === 0 ? (
-        <p className="rounded-2xl border border-base-700/60 bg-base-900/60 p-8 text-center text-zinc-500">
+        <p className="card-gradient-border p-8 text-center text-zinc-500">
           No hay submissions {activeTab === "pending" ? "pendientes" : activeTab === "approved" ? "aprobadas" : activeTab === "rejected" ? "rechazadas" : ""}.
         </p>
       ) : (
@@ -245,7 +245,7 @@ export default function ModPage() {
             <div
               key={s.id}
               onClick={() => setSelected(s)}
-              className="cursor-pointer rounded-2xl border border-base-700/60 bg-base-900 p-5 transition hover:border-accent-cyan/60"
+              className="card-gradient-border cursor-pointer p-5 transition"
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
@@ -337,7 +337,7 @@ export default function ModPage() {
 
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border border-base-700/60 bg-base-900 p-6 shadow-glow">
+          <div className="card-gradient-border p-6 shadow-glow">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3 className="font-display text-xl font-bold text-white">
@@ -356,7 +356,7 @@ export default function ModPage() {
             </div>
 
             <div className="mt-6 space-y-4">
-              <div className="rounded-xl border border-base-700/60 bg-base-800 p-4">
+              <div className="card-gradient-border rounded-xl p-4">
                 <p className="text-sm text-zinc-400">Vídeo de la completion</p>
                 <a
                   href={selected.video_url}
@@ -369,18 +369,18 @@ export default function ModPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-xl border border-base-700/60 bg-base-800 p-4">
+                <div className="card-gradient-border rounded-xl p-4">
                   <p className="text-sm text-zinc-400">FPS</p>
                   <p className="font-display text-lg font-bold text-white">{selected.fps || "—"}</p>
                 </div>
-                <div className="rounded-xl border border-base-700/60 bg-base-800 p-4">
+                <div className="card-gradient-border rounded-xl p-4">
                   <p className="text-sm text-zinc-400">Refresh rate</p>
                   <p className="font-display text-lg font-bold text-white">{selected.refresh_rate ? `${selected.refresh_rate}Hz` : "—"}</p>
                 </div>
               </div>
 
               {selected.comment && (
-                <div className="rounded-xl border border-base-700/60 bg-base-800 p-4">
+                <div className="card-gradient-border rounded-xl p-4">
                   <p className="text-sm text-zinc-400">Comentario</p>
                   <p className="mt-1 text-sm text-white">"{selected.comment}"</p>
                 </div>

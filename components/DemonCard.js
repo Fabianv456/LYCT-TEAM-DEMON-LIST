@@ -14,7 +14,7 @@ export default function DemonCard({ demon }) {
   return (
     <Link
       href={`/demon/${demon.id}`}
-      className="group relative overflow-hidden rounded-2xl border border-base-700/60 bg-base-900 p-4 transition hover:border-accent-cyan/60"
+      className="group card-gradient-border card-gradient-border-lg block p-4 transition"
     >
       {demon.background_url && (
         <div

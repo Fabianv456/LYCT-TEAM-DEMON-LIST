@@ -259,11 +259,7 @@ export default function AdminPage() {
               onDragOver={(e) => handleDragOver(e, index)}
               onDrop={handleDrop}
               onClick={() => handleSelect(demon)}
-              className={`cursor-move rounded-2xl border p-4 transition ${
-                selectedId === demon.id
-                  ? "border-accent-cyan/60 bg-base-800"
-                  : "border-base-700/60 bg-base-900 hover:border-base-600"
-              }`}
+              className="card-gradient-border cursor-move p-4 transition"
             >
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-accent-gradient font-display text-lg font-bold text-white shadow-glow">
@@ -331,7 +327,7 @@ export default function AdminPage() {
                 }}
               />
 
-              <div className="rounded-2xl border border-base-700/60 bg-base-900 p-6">
+              <div className="card-gradient-border p-6">
                 <h3 className="mb-3 font-display text-lg font-semibold text-white">Imagen del nivel</h3>
                 <MediaUploader
                   currentUrl={selected.thumbnail_url}
@@ -340,7 +336,7 @@ export default function AdminPage() {
                 />
               </div>
 
-              <div className="rounded-2xl border border-base-700/60 bg-base-900 p-6">
+              <div className="card-gradient-border p-6">
                 <h3 className="mb-3 font-display text-lg font-semibold text-white">Imagen de fondo</h3>
                 <MediaUploader
                   currentUrl={selected.background_url}
@@ -349,7 +345,7 @@ export default function AdminPage() {
                 />
               </div>
 
-              <div className="rounded-2xl border border-base-700/60 bg-base-900 p-6">
+              <div className="card-gradient-border p-6">
                 <h3 className="mb-3 font-display text-lg font-semibold text-white">Icono Extreme Demon</h3>
                 <MediaUploader
                   currentUrl={selected.extreme_demon_icon_url}
@@ -358,7 +354,7 @@ export default function AdminPage() {
                 />
               </div>
 
-              <div className="rounded-2xl border border-base-700/60 bg-base-900 p-6">
+              <div className="card-gradient-border p-6">
                 <h3 className="mb-3 font-display text-lg font-semibold text-accent-red">Zona de peligro</h3>
                 <p className="text-sm text-zinc-400">
                   Elimina este nivel permanentemente. Esta acción no se puede deshacer.
@@ -376,8 +372,8 @@ export default function AdminPage() {
       )}
 
       {!selected && (
-        <div className="rounded-2xl border border-base-700/60 bg-base-900 p-6">
-          <h2 className="mb-4 font-display text-xl font-bold text-white">Crear nuevo nivel</h2>
+          <div className="card-gradient-border p-6">
+            <h2 className="mb-4 font-display text-xl font-bold text-white">Crear nuevo nivel</h2>
           <LevelForm
             onSuccess={handleSuccess}
             onCreated={handleCreated}

@@ -35,7 +35,7 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-md animate-fade-in">
-      <div className="rounded-2xl border border-base-700/60 bg-base-900 p-6">
+      <div className="card-gradient-border p-6">
         <h1 className="font-display text-2xl font-bold text-white">Iniciar sesión</h1>
         <p className="mt-1 text-sm text-zinc-400">Accede a tu cuenta de LYCT TEAM.</p>
 

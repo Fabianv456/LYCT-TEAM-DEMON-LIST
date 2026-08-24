@@ -64,7 +64,7 @@ export default function DemonDetailPage() {
     <div className="animate-fade-in space-y-6">
       <Link href="/" className="text-sm text-zinc-400 hover:text-white">← Volver a la lista</Link>
 
-      <div className="flex flex-col gap-6 rounded-2xl border border-base-700/60 bg-base-900 p-6 sm:flex-row">
+      <div className="card-gradient-border flex flex-col gap-6 p-6 sm:flex-row">
         <div className="h-48 w-full flex-none overflow-hidden rounded-xl bg-base-800 sm:w-72">
           {demon.thumbnail_url ? (
             <img src={demon.thumbnail_url} alt={demon.name} className="h-full w-full object-cover" />

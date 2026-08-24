@@ -128,7 +128,7 @@ export default function SubmitPage() {
         <p className="text-sm text-zinc-400">Tu envío quedará como <span className="text-yellow-400">Pending</span> hasta que un moderador lo revise.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-base-700/60 bg-base-900 p-6">
+      <form onSubmit={handleSubmit} className="card-gradient-border space-y-4 p-6">
         <div>
           <label className="mb-1 block text-sm text-zinc-400">Extreme Demon</label>
           <select
@@ -222,10 +222,10 @@ export default function SubmitPage() {
             {userSubmissions.map((s) => {
               const demon = demons.find((d) => d.id === s.demon_id);
               return (
-                <div
-                  key={s.id}
-                  className="flex items-center justify-between rounded-xl border border-base-700/60 bg-base-900 px-4 py-3"
-                >
+                 <div
+                   key={s.id}
+                   className="card-gradient-border flex items-center justify-between px-4 py-3 transition"
+                 >
                   <div>
                     <p className="text-sm text-white">
                       #{demon?.position || "?"} {demon?.name || "Demon desconocido"}

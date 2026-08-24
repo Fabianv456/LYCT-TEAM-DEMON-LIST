@@ -13,7 +13,7 @@ export default function SubmissionCard({ submission, onView, onApprove, onReject
   const statusLabels = { pending: "Pending", approved: "Approved", rejected: "Rejected" };
 
   return (
-    <div className="rounded-2xl border border-base-700/60 bg-base-900 p-5 transition hover:border-accent-purple/60">
+    <div className="card-gradient-border p-5 transition hover:shadow-glow">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <Link
@@ -33,14 +33,14 @@ export default function SubmissionCard({ submission, onView, onApprove, onReject
         </div>
 
         <div className="flex items-center gap-2">
-          <span className={`rounded-full border px-3 py-1 text-xs font-medium ${statusStyles[submission.status]}`}>
+          <span className={`card-gradient-border rounded-full px-3 py-1 text-xs font-medium ${statusStyles[submission.status]}`}>
             {statusLabels[submission.status]}
           </span>
           <a
             href={submission.video_url}
             target="_blank"
             rel="noreferrer"
-            className="rounded-lg border border-base-700 px-3 py-1.5 text-sm text-accent-red hover:border-accent-red"
+            className="card-gradient-border rounded-lg px-3 py-1.5 text-sm text-accent-red hover:opacity-90"
           >
             Ver vídeo ↗
           </a>
@@ -57,7 +57,7 @@ export default function SubmissionCard({ submission, onView, onApprove, onReject
             onKeyDown={(e) => {
               if (e.key === "Enter") onReject?.(submission, e.target.value);
             }}
-            className="flex-1 rounded-xl border border-base-700 bg-base-800 px-3 py-2 text-sm text-white outline-none focus:border-accent-purple"
+            className="input-gradient-border flex-1 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-accent-purple"
             id={`reject-${submission.id}`}
           />
           <div className="flex gap-2">

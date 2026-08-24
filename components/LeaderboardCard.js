@@ -11,7 +11,7 @@ export default function LeaderboardCard({ player, rank, showCountry = true }) {
   return (
     <Link
       href={`/profile/${player.username}`}
-      className="flex items-center gap-4 rounded-2xl border border-base-700/60 bg-base-900 p-4 transition hover:border-accent-cyan/60"
+      className="card-gradient-border flex items-center gap-4 p-4 transition"
     >
       <div className="flex h-10 w-10 flex-none items-center justify-center rounded-lg bg-base-800 font-display text-sm font-bold text-white">
         #{rank}

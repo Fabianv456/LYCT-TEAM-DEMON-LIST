@@ -84,3 +84,55 @@ input, textarea, select {
 .animate-fade-in {
   animation: fadeInUp 0.35s ease-out both;
 }
+
+.card-gradient-border {
+  position: relative;
+  background: var(--base-900);
+  border-radius: 1rem;
+}
+.card-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+.card-gradient-border:hover::before {
+  opacity: 1;
+}
+
+.card-gradient-border-lg {
+  border-radius: 1.5rem;
+}
+
+.input-gradient-border {
+  position: relative;
+  background: var(--base-800);
+  border-radius: 0.75rem;
+}
+.input-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+.input-gradient-border:focus-within::before {
+  opacity: 1;
+}

@@ -129,7 +129,7 @@ export default function EditProfilePage() {
         <p className="text-sm text-zinc-400">Actualiza tu información personal.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-base-700/60 bg-base-900 p-6">
+      <form onSubmit={handleSubmit} className="card-gradient-border card-gradient-border-lg space-y-6 p-6">
         <div className="flex flex-col items-center gap-4">
           <Avatar src={avatarUrl} alt={username} size="xl" />
           <div className="flex gap-2">
@@ -137,7 +137,7 @@ export default function EditProfilePage() {
               type="button"
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
-              className="rounded-xl border border-base-700 px-4 py-2 text-sm text-zinc-300 transition hover:bg-base-800 disabled:opacity-50"
+              className="card-gradient-border rounded-xl border border-base-700 px-4 py-2 text-sm text-zinc-300 transition hover:bg-base-800 disabled:opacity-50"
             >
               {uploading ? "Subiendo..." : avatarUrl ? "Cambiar avatar" : "Subir avatar"}
             </button>

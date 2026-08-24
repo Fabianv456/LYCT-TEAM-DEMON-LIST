@@ -69,7 +69,7 @@ export default function ProfilePage() {
 
   return (
     <div className="animate-fade-in space-y-6">
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-base-700/60 bg-base-900 p-6 sm:flex-row sm:items-start">
+      <div className="card-gradient-border flex flex-col items-center gap-4 p-6 sm:flex-row sm:items-start">
         <Avatar src={profile.avatar_url} alt={profile.username} size="xl" />
         <div className="text-center sm:text-left">
           <h1 className="font-display text-2xl font-bold text-white">{profile.username}</h1>
