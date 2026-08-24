@@ -88,7 +88,7 @@ export default function HomePage() {
           </Link>
 
           <a
-            href="https://discord.gg/tu-invitacion"
+            href="https://discord.gg/gMV7ZW38v7"
             target="_blank"
             rel="noreferrer"
             className="rounded-2xl border border-accent-blue/40 bg-accent-blue/10 p-6 text-center transition hover:border-accent-cyan hover:bg-accent-cyan/10"

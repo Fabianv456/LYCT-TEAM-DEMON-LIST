@@ -28,17 +28,25 @@ export default function ModPage() {
   const [total, setTotal] = useState(0);
   const [stats, setStats] = useState({ pending: 0, approved_today: 0, rejected_today: 0, total: 0 });
   const [selected, setSelected] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!authLoading && !isStaff && !isAdmin) router.push("/");
   }, [authLoading, isStaff, isAdmin, router]);
 
+  useEffect(() => {
+    console.log("[MOD] authLoading:", authLoading, "isStaff:", isStaff, "isAdmin:", isAdmin, "user:", user?.id);
+  }, [authLoading, isStaff, isAdmin, user]);
+
   async function loadStats() {
     try {
+      console.log("[MOD] loading stats...");
       const { data } = await supabase.rpc("get_moderation_stats");
+      console.log("[MOD] stats result:", data);
       if (data?.length) setStats(data[0]);
     } catch (err) {
-      console.error("Error loading moderation stats:", err);
+      console.error("[MOD] stats error:", err);
+      setError("Error al cargar estadísticas: " + (err.message || err));
     }
   }
 
@@ -46,6 +54,7 @@ export default function ModPage() {
     setLoading(true);
     setError("");
     try {
+      console.log("[MOD] loading items, tab:", activeTab, "page:", page);
       let query = supabase
         .from("submissions")
         .select("*", { count: "exact" })
@@ -62,6 +71,8 @@ export default function ModPage() {
 
       const from = (page - 1) * PAGE_SIZE;
       const { data, error, count } = await query.range(from, from + PAGE_SIZE - 1);
+
+      console.log("[MOD] submissions query:", { data, error, count });
 
       if (error) throw error;
 
@@ -88,9 +99,11 @@ export default function ModPage() {
           submitter_username: profile?.username || item.gd_username || "Desconocido",
         };
       });
+      console.log("[MOD] normalized items:", normalized.length);
       setItems(normalized);
       setTotal(count || 0);
     } catch (err) {
+      console.error("[MOD] items error:", err);
       setError(err.message || "Error al cargar las submissions.");
     } finally {
       setLoading(false);
@@ -152,8 +165,17 @@ export default function ModPage() {
     setSelected(null);
   }
 
-  if (authLoading || !isStaff) {
+  if (authLoading || (!isStaff && !isAdmin)) {
     return <div className="h-40 animate-pulse rounded-2xl bg-base-900" />;
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="rounded-2xl border border-base-700/60 bg-base-900 p-8 text-center">
+        <p className="text-sm text-zinc-400">No tenés permisos para acceder a esta página.</p>
+        <p className="mt-2 text-xs text-zinc-500">Role actual: {profile?.role || "ninguno"}</p>
+      </div>
+    );
   }
 
   return (
@@ -162,6 +184,12 @@ export default function ModPage() {
         <h1 className="font-display text-2xl font-bold text-white">Panel de moderación</h1>
         <p className="text-sm text-zinc-400">Gestiona las submissions de completions.</p>
       </div>
+
+      {error && (
+        <div className="rounded-2xl border border-accent-red/40 bg-accent-red/10 p-4 text-sm text-accent-red">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="rounded-2xl border border-base-700/60 bg-base-900 p-4 text-center">
