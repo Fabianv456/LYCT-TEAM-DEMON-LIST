@@ -214,7 +214,11 @@ export default function ModPage() {
       ) : (
         <div className="space-y-4">
           {items.map((s) => (
-            <div key={s.id} className="rounded-2xl border border-base-700/60 bg-base-900 p-5 transition hover:border-accent-cyan/60">
+            <div
+              key={s.id}
+              onClick={() => setSelected(s)}
+              className="cursor-pointer rounded-2xl border border-base-700/60 bg-base-900 p-5 transition hover:border-accent-cyan/60"
+            >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <p className="font-display font-semibold text-white">
@@ -230,6 +234,7 @@ export default function ModPage() {
                   href={s.video_url}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={(e) => e.stopPropagation()}
                   className="rounded-lg border border-base-700 px-3 py-1.5 text-sm text-accent-cyan hover:border-accent-cyan"
                 >
                   Ver vídeo ↗
@@ -252,14 +257,15 @@ export default function ModPage() {
                   <div className="flex gap-2">
                     <button
                       disabled={!s.id || busyId === s.id}
-                      onClick={() => handleApprove(s)}
+                      onClick={(e) => { e.stopPropagation(); handleApprove(s); }}
                       className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500 disabled:opacity-50"
                     >
                       Approve
                     </button>
                     <button
                       disabled={!s.id || busyId === s.id}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         const input = document.getElementById(`reject-${s.id}`);
                         handleReject(s, input?.value || "");
                       }}
