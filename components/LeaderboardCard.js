@@ -4,8 +4,9 @@ import Link from "next/link";
 import Avatar from "@/components/Avatar";
 
 export default function LeaderboardCard({ player, rank, showCountry = true }) {
-  const country = player.country_code
-    ? String.fromCodePoint(...[...player.country_code].map(c => 0x1F1E6 + c.charCodeAt(0) - 65))
+  const code = (player.country_code || "").toUpperCase();
+  const country = code
+    ? String.fromCodePoint(...[...code].map(c => 0x1F1E6 + c.charCodeAt(0) - 65))
     : "";
 
   return (
