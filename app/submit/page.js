@@ -275,9 +275,9 @@ export default function SubmitPage() {
                   )}
                   <div className="relative flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <div className="h-16 w-24 flex-none overflow-hidden rounded-lg bg-base-800">
+                      <div className="h-20 w-28 flex-none overflow-hidden rounded-lg bg-base-800">
                         {demon?.thumbnail_url ? (
-                          <img src={demon.thumbnail_url} alt={demon?.name} className="h-full w-full object-cover" />
+                          <img src={demon.thumbnail_url} alt={demon?.name || "Demon"} className="h-full w-full object-cover" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-xs text-zinc-600">Sin img</div>
                         )}
