@@ -78,19 +78,42 @@ export default function AdminPage() {
     setSuccess("");
   }
 
-  async function handleSuccess({ demonId, previousPosition, newPosition }) {
-    setSuccess(demonId && selectedId === demonId ? "Nivel actualizado correctamente." : "Nivel creado correctamente.");
+  async function handleSuccess() {
+    setSuccess(selectedId ? "Nivel actualizado correctamente." : "Nivel creado correctamente.");
     setError("");
 
-    try {
-      if (demonId && newPosition) {
-        await supabase.rpc("reorder_demons", {
-          demon_id: demonId,
-          new_position: newPosition,
-        });
+    const selected = demons.find((d) => d.id === selectedId);
+    if (selected) {
+      const oldPosition = selected.position;
+      const newPosition = Number(form.position);
+      
+      if (oldPosition !== newPosition) {
+        try {
+          const updatedDemons = demons.map((d) => {
+            if (d.id === selectedId) {
+              return { ...d, position: newPosition };
+            }
+            if (oldPosition < newPosition) {
+              if (d.position > oldPosition && d.position <= newPosition) {
+                return { ...d, position: d.position - 1 };
+              }
+            } else {
+              if (d.position >= newPosition && d.position < oldPosition) {
+                return { ...d, position: d.position + 1 };
+              }
+            }
+            return d;
+          });
+
+          const updates = updatedDemons.map((d) =>
+            supabase.from("demons").update({ position: d.position }).eq("id", d.id)
+          );
+
+          await Promise.all(updates);
+        } catch (err) {
+          setError("Guardado, pero error al reordenar: " + (err.message || err));
+        }
       }
-    } catch (err) {
-      setError("Guardado, pero error al reordenar: " + (err.message || err));
     }
 
     await loadDemons();
@@ -208,10 +231,37 @@ export default function AdminPage() {
 
     setReordering(true);
     try {
-      await supabase.rpc("reorder_demons", {
-        demon_id: fromDemon.id,
-        new_position: toDemon.position,
+      const newPosition = toDemon.position;
+      const oldPosition = fromDemon.position;
+
+      if (oldPosition === newPosition) {
+        setReordering(false);
+        dragItem.current = null;
+        dragOverItem.current = null;
+        return;
+      }
+
+      const updatedDemons = demons.map((d) => {
+        if (d.id === fromDemon.id) {
+          return { ...d, position: newPosition };
+        }
+        if (oldPosition < newPosition) {
+          if (d.position > oldPosition && d.position <= newPosition) {
+            return { ...d, position: d.position - 1 };
+          }
+        } else {
+          if (d.position >= newPosition && d.position < oldPosition) {
+            return { ...d, position: d.position + 1 };
+          }
+        }
+        return d;
       });
+
+      const updates = updatedDemons.map((d) =>
+        supabase.from("demons").update({ position: d.position }).eq("id", d.id)
+      );
+
+      await Promise.all(updates);
       await loadDemons();
     } catch (err) {
       setError("Error al reordenar: " + (err.message || err));
