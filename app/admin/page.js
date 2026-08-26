@@ -97,14 +97,14 @@ export default function AdminPage() {
       const targetIdx = idx + direction;
       if (targetIdx < 0 || targetIdx >= sorted.length) return;
 
-      const [moved] = sorted.splice(idx, 1);
-      sorted.splice(targetIdx, 0, moved);
+      const target = sorted[targetIdx];
 
-      const updates = sorted.map((d, i) =>
-        supabase.from("demons").update({ position: i + 1 }).eq("id", d.id)
-      );
+      const { error } = await supabase.rpc("reorder_demons", {
+        demon_id: demonId,
+        new_position: target.position,
+      });
 
-      await Promise.all(updates);
+      if (error) throw error;
       await loadDemons();
     } catch (err) {
       setError("Error al reordenar: " + (err.message || err));
