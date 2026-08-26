@@ -149,7 +149,19 @@ export default function SubmitPage() {
             ))}
           </select>
           {selectedDemon && (
-            <p className="mt-1 text-xs text-zinc-500">Nivel #{selectedDemon.position} por {selectedDemon.creator}</p>
+            <div className="card-gradient-border mt-3 flex items-center gap-3 p-3">
+              <div className="h-16 w-16 flex-none overflow-hidden rounded-lg bg-base-800">
+                {selectedDemon.thumbnail_url ? (
+                  <img src={selectedDemon.thumbnail_url} alt={selectedDemon.name} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-xs text-zinc-600">Sin img</div>
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">#{selectedDemon.position} {selectedDemon.name}</p>
+                <p className="text-xs text-zinc-400">por {selectedDemon.creator}</p>
+              </div>
+            </div>
           )}
         </div>
 
