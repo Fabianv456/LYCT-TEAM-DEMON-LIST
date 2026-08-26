@@ -45,7 +45,7 @@ alter table public.demons add column if not exists background_url text;
 alter table public.demons add column if not exists extreme_demon_icon_url text;
 alter table public.demons add column if not exists points int not null default 100;
 
-create unique index if not exists demons_position_idx on public.demons(position);
+create index if not exists demons_position_idx on public.demons(position);
 create index if not exists demons_name_idx on public.demons(name);
 
 -- ---------- TABLA: submissions ----------
@@ -361,44 +361,28 @@ language plpgsql
 security definer
 as $$
 begin
-  if not exists (
-    select 1 from public.profiles
-    where id = auth.uid() and role = 'admin'
-  ) then
-    raise exception 'Solo los administradores pueden reordenar niveles';
-  end if;
-
   if from_position = to_position then
     return;
   end if;
 
   if from_position < to_position then
     update public.demons
-    set position = -position
-    where position = from_position;
-
-    update public.demons
     set position = position - 1
     where position > from_position and position <= to_position;
-
-    update public.demons
-    set position = to_position
-    where position = -from_position;
   else
-    update public.demons
-    set position = -position
-    where position = from_position;
-
     update public.demons
     set position = position + 1
     where position >= to_position and position < from_position;
-
-    update public.demons
-    set position = to_position
-    where position = -from_position;
   end if;
+
+  update public.demons
+  set position = to_position
+  where position = from_position;
 end;
 $$;
+
+revoke all on function public.reorder_demons(int, int) from public, anon, authenticated;
+grant execute on function public.reorder_demons(int, int) to authenticated;
 
 create or replace function public.enforce_single_primary_image()
 returns trigger
