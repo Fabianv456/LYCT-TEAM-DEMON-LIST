@@ -379,6 +379,27 @@ export default function ModPage() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="card-gradient-border rounded-xl p-4">
+                  <p className="text-sm text-zinc-400">Raw complete</p>
+                  {selected.raw_complete_url ? (
+                    <a href={selected.raw_complete_url} target="_blank" rel="noreferrer" className="mt-1 inline-block text-accent-cyan hover:underline text-sm">
+                      Ver raw ↗
+                    </a>
+                  ) : (
+                    <p className="font-display text-lg font-bold text-white">—</p>
+                  )}
+                </div>
+                <div className="card-gradient-border rounded-xl p-4">
+                  <p className="text-sm text-zinc-400">Mod menu</p>
+                  <p className="font-display text-lg font-bold text-white">{selected.mod_menu || "—"}</p>
+                </div>
+                <div className="card-gradient-border rounded-xl p-4">
+                  <p className="text-sm text-zinc-400">Dispositivo</p>
+                  <p className="font-display text-lg font-bold text-white">{selected.device || "—"}</p>
+                </div>
+              </div>
+
               {selected.comment && (
                 <div className="card-gradient-border rounded-xl p-4">
                   <p className="text-sm text-zinc-400">Comentario</p>

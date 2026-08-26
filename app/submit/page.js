@@ -17,6 +17,9 @@ export default function SubmitPage() {
   const [fps, setFps] = useState("");
   const [refreshRate, setRefreshRate] = useState("");
   const [comment, setComment] = useState("");
+  const [rawCompleteUrl, setRawCompleteUrl] = useState("");
+  const [modMenu, setModMenu] = useState("");
+  const [device, setDevice] = useState("");
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -93,6 +96,9 @@ export default function SubmitPage() {
       fps: fps ? Number(fps) : null,
       refresh_rate: refreshRate ? Number(refreshRate) : null,
       comment: comment || null,
+      raw_complete_url: rawCompleteUrl || null,
+      mod_menu: modMenu || null,
+      device: device || null,
     });
 
     setSubmitting(false);
@@ -187,6 +193,40 @@ export default function SubmitPage() {
               className="w-full rounded-xl border border-base-700 bg-base-800 px-4 py-2.5 text-sm text-white outline-none focus:border-accent-cyan"
             />
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-sm text-zinc-400">Enviar raw complete (opcional)</label>
+            <input
+              value={rawCompleteUrl}
+              onChange={(e) => setRawCompleteUrl(e.target.value)}
+              placeholder="https://..."
+              className="w-full rounded-xl border border-base-700 bg-base-800 px-4 py-2.5 text-sm text-white outline-none focus:border-accent-cyan"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm text-zinc-400">Mod menu usado (opcional)</label>
+            <input
+              value={modMenu}
+              onChange={(e) => setModMenu(e.target.value)}
+              placeholder="Ej: Megahack, Replay, etc."
+              className="w-full rounded-xl border border-base-700 bg-base-800 px-4 py-2.5 text-sm text-white outline-none focus:border-accent-cyan"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm text-zinc-400">Dispositivo (opcional)</label>
+          <select
+            value={device}
+            onChange={(e) => setDevice(e.target.value)}
+            className="w-full rounded-xl border border-base-700 bg-base-800 px-4 py-2.5 text-sm text-white outline-none focus:border-accent-cyan"
+          >
+            <option value="">Seleccionar...</option>
+            <option value="PC">PC</option>
+            <option value="Mobile">Mobile / Celular</option>
+          </select>
         </div>
 
         <div>
