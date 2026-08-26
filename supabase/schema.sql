@@ -45,7 +45,7 @@ alter table public.demons add column if not exists background_url text;
 alter table public.demons add column if not exists extreme_demon_icon_url text;
 alter table public.demons add column if not exists points int not null default 100;
 
-create index if not exists demons_position_idx on public.demons(position);
+create unique index if not exists demons_position_idx on public.demons(position);
 create index if not exists demons_name_idx on public.demons(name);
 
 -- ---------- TABLA: submissions ----------
