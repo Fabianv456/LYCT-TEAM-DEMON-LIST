@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { supabaseBrowser } from "@/lib/supabaseClient";
@@ -23,9 +23,6 @@ export default function AdminPage() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [reordering, setReordering] = useState(false);
-
-  const dragItem = useRef(null);
-  const dragOverItem = useRef(null);
 
   useEffect(() => {
     if (!authLoading && !isAdmin) router.push("/");
@@ -81,41 +78,6 @@ export default function AdminPage() {
   async function handleSuccess() {
     setSuccess(selectedId ? "Nivel actualizado correctamente." : "Nivel creado correctamente.");
     setError("");
-
-    const selected = demons.find((d) => d.id === selectedId);
-    if (selected) {
-      const oldPosition = selected.position;
-      const newPosition = Number(form.position);
-      
-      if (oldPosition !== newPosition) {
-        try {
-          const updatedDemons = demons.map((d) => {
-            if (d.id === selectedId) {
-              return { ...d, position: newPosition };
-            }
-            if (oldPosition < newPosition) {
-              if (d.position > oldPosition && d.position <= newPosition) {
-                return { ...d, position: d.position - 1 };
-              }
-            } else {
-              if (d.position >= newPosition && d.position < oldPosition) {
-                return { ...d, position: d.position + 1 };
-              }
-            }
-            return d;
-          });
-
-          const updates = updatedDemons.map((d) =>
-            supabase.from("demons").update({ position: d.position }).eq("id", d.id)
-          );
-
-          await Promise.all(updates);
-        } catch (err) {
-          setError("Guardado, pero error al reordenar: " + (err.message || err));
-        }
-      }
-    }
-
     await loadDemons();
     setTimeout(() => setSuccess(""), 3000);
   }
@@ -123,6 +85,35 @@ export default function AdminPage() {
   async function handleCreated(newDemon) {
     setSelectedId(newDemon.id);
     await loadDemons();
+  }
+
+  async function handleMove(demonId, direction) {
+    setReordering(true);
+    try {
+      const sorted = [...demons].sort((a, b) => a.position - b.position);
+      const idx = sorted.findIndex((d) => d.id === demonId);
+      if (idx === -1) return;
+
+      const targetIdx = idx + direction;
+      if (targetIdx < 0 || targetIdx >= sorted.length) return;
+
+      const current = sorted[idx];
+      const target = sorted[targetIdx];
+      const temp = current.position;
+      current.position = target.position;
+      target.position = temp;
+
+      await Promise.all([
+        supabase.from("demons").update({ position: current.position }).eq("id", current.id),
+        supabase.from("demons").update({ position: target.position }).eq("id", target.id),
+      ]);
+
+      await loadDemons();
+    } catch (err) {
+      setError("Error al reordenar: " + (err.message || err));
+    } finally {
+      setReordering(false);
+    }
   }
 
   async function handleImageUpload(file) {
@@ -209,52 +200,6 @@ export default function AdminPage() {
     setDeleteTarget(null);
   }
 
-  async function handleDragStart(e, index) {
-    dragItem.current = index;
-    e.dataTransfer.effectAllowed = "move";
-  }
-
-  function handleDragOver(e, index) {
-    e.preventDefault();
-    dragOverItem.current = index;
-  }
-
-  async function handleDrop(e) {
-    e.preventDefault();
-    const fromIndex = dragItem.current;
-    const toIndex = dragOverItem.current;
-    if (fromIndex === null || toIndex === null || fromIndex === toIndex) return;
-
-    const source = filtered[fromIndex];
-    const target = filtered[toIndex];
-    if (!source || !target) return;
-
-    setReordering(true);
-    try {
-      const next = [...demons];
-      const currentIdx = next.findIndex((d) => d.id === source.id);
-      const overIdx = next.findIndex((d) => d.id === target.id);
-      if (currentIdx === -1 || overIdx === -1) throw new Error("No se encontraron los niveles para reordenar.");
-
-      const [moved] = next.splice(currentIdx, 1);
-      next.splice(overIdx, 0, moved);
-
-      const updates = next.map((d, idx) => {
-        const position = idx + 1;
-        return supabase.from("demons").update({ position }).eq("id", d.id);
-      });
-
-      await Promise.all(updates);
-      await loadDemons();
-    } catch (err) {
-      setError("Error al reordenar: " + (err.message || err));
-    } finally {
-      setReordering(false);
-      dragItem.current = null;
-      dragOverItem.current = null;
-    }
-  }
-
   if (authLoading || !isAdmin) {
     return <div className="h-40 animate-pulse rounded-2xl bg-base-900" />;
   }
@@ -296,48 +241,61 @@ export default function AdminPage() {
         </p>
       ) : (
         <div className="grid gap-3">
-          {filtered.map((demon, index) => (
-            <div
-              key={demon.id}
-              draggable
-              onDragStart={(e) => handleDragStart(e, index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDrop={handleDrop}
-              onClick={() => handleSelect(demon)}
-              className="card-gradient-border cursor-move p-4 transition"
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-accent-gradient font-display text-lg font-bold text-white shadow-glow">
-                  #{demon.position}
-                </div>
-                <div className="h-16 w-28 flex-none overflow-hidden rounded-lg bg-base-800">
-                  {demon.thumbnail_url ? (
-                    <img
-                      src={demon.thumbnail_url}
-                      alt={demon.name}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-xs text-zinc-600">Sin imagen</div>
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="truncate font-display text-base font-semibold text-white">{demon.name}</h3>
-                  <p className="truncate text-sm text-zinc-400">por {demon.creator}</p>
-                  <p className="truncate text-xs text-zinc-500">ID: {demon.level_id} · {demon.points || 100} pts</p>
-                </div>
-                <div className="hidden flex-col items-end gap-1 sm:flex">
-                  <span className="rounded-full border border-accent-cyan/40 bg-accent-cyan/10 px-3 py-1 text-xs font-medium text-cyan-300">
-                    {demon.difficulty}
-                  </span>
+          {filtered.map((demon) => {
+            const sortedIndex = [...demons].sort((a, b) => a.position - b.position).findIndex((d) => d.id === demon.id);
+            return (
+              <div
+                key={demon.id}
+                onClick={() => handleSelect(demon)}
+                className="card-gradient-border p-4 transition"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-accent-gradient font-display text-lg font-bold text-white shadow-glow">
+                    #{demon.position}
+                  </div>
+                  <div className="h-16 w-28 flex-none overflow-hidden rounded-lg bg-base-800">
+                    {demon.thumbnail_url ? (
+                      <img
+                        src={demon.thumbnail_url}
+                        alt={demon.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-xs text-zinc-600">Sin imagen</div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-display text-base font-semibold text-white">{demon.name}</h3>
+                    <p className="truncate text-sm text-zinc-400">por {demon.creator}</p>
+                    <p className="truncate text-xs text-zinc-500">ID: {demon.level_id} · {demon.points || 100} pts</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleMove(demon.id, -1); }}
+                      disabled={reordering || sortedIndex === 0}
+                      className="rounded-lg border border-base-700 px-2 py-1 text-xs text-zinc-300 transition hover:bg-base-800 disabled:opacity-50"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleMove(demon.id, 1); }}
+                      disabled={reordering || sortedIndex === filtered.length - 1}
+                      className="rounded-lg border border-base-700 px-2 py-1 text-xs text-zinc-300 transition hover:bg-base-800 disabled:opacity-50"
+                    >
+                      ↓
+                    </button>
+                    <div className="hidden flex-col items-end gap-1 sm:flex">
+                      <span className="rounded-full border border-accent-cyan/40 bg-accent-cyan/10 px-3 py-1 text-xs font-medium text-cyan-300">
+                        {demon.difficulty}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
-
-      <p className="text-xs text-zinc-600">Arrastra los niveles para reordenarlos.</p>
 
       {selected && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4">
