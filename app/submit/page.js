@@ -265,28 +265,36 @@ export default function SubmitPage() {
               return (
                  <div
                    key={s.id}
-                   className="card-gradient-border flex items-center justify-between px-4 py-3 transition"
+                   className="card-gradient-border relative overflow-hidden px-4 py-3 transition"
                  >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 flex-none overflow-hidden rounded-lg bg-base-800">
-                      {demon?.thumbnail_url ? (
-                        <img src={demon.thumbnail_url} alt={demon?.name} className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-xs text-zinc-600">Sin img</div>
-                      )}
+                  {demon?.background_url && (
+                    <div
+                      className="absolute inset-0 bg-cover bg-center opacity-20"
+                      style={{ backgroundImage: `url(${demon.background_url})` }}
+                    />
+                  )}
+                  <div className="relative flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-16 w-24 flex-none overflow-hidden rounded-lg bg-base-800">
+                        {demon?.thumbnail_url ? (
+                          <img src={demon.thumbnail_url} alt={demon?.name} className="h-full w-full object-cover" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-xs text-zinc-600">Sin img</div>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm text-white">
+                          #{demon?.position || "?"} {demon?.name || "Demon desconocido"}
+                        </p>
+                        <p className="text-xs text-zinc-500">
+                          {new Date(s.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-white">
-                        #{demon?.position || "?"} {demon?.name || "Demon desconocido"}
-                      </p>
-                      <p className="text-xs text-zinc-500">
-                        {new Date(s.created_at).toLocaleDateString()}
-                      </p>
-                    </div>
+                    <span className={`rounded-full border px-3 py-1 text-xs font-medium capitalize ${statusStyles[s.status] || "border-base-700 text-zinc-400"}`}>
+                      {statusLabels[s.status] || s.status}
+                    </span>
                   </div>
-                  <span className={`rounded-full border px-3 py-1 text-xs font-medium capitalize ${statusStyles[s.status] || "border-base-700 text-zinc-400"}`}>
-                    {statusLabels[s.status] || s.status}
-                  </span>
                 </div>
               );
             })}

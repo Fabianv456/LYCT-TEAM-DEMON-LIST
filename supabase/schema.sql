@@ -359,7 +359,10 @@ drop index if exists public.demons_position_idx;
 
 create index if not exists demons_position_idx on public.demons(position);
 
-create or replace function public.reorder_demons(demon_id uuid, new_position int)
+drop function if exists public.reorder_demons(int, int);
+drop function if exists public.reorder_demons(uuid, int);
+
+create or replace function public.reorder_demons(p_demon_id uuid, p_new_position int)
 returns void
 language plpgsql
 security definer
@@ -376,29 +379,29 @@ begin
 
   select position into current_position
   from public.demons
-  where id = demon_id;
+  where id = p_demon_id;
 
   if current_position is null then
     raise exception 'Nivel no encontrado';
   end if;
 
-  if current_position = new_position then
+  if current_position = p_new_position then
     return;
   end if;
 
-  if current_position < new_position then
+  if current_position < p_new_position then
     update public.demons
     set position = position - 1
-    where position > current_position and position <= new_position;
+    where position > current_position and position <= p_new_position;
   else
     update public.demons
     set position = position + 1
-    where position >= new_position and position < current_position;
+    where position >= p_new_position and position < current_position;
   end if;
 
   update public.demons
-  set position = new_position
-  where id = demon_id;
+  set position = p_new_position
+  where id = p_demon_id;
 end;
 $$;
 
