@@ -64,8 +64,14 @@ export default function DemonDetailPage() {
     <div className="animate-fade-in space-y-6">
       <Link href="/" className="text-sm text-zinc-400 hover:text-white">← Volver a la lista</Link>
 
-      <div className="card-gradient-border flex flex-col gap-6 p-6 sm:flex-row">
-        <div className="h-48 w-full flex-none overflow-hidden rounded-xl bg-base-800 sm:w-72">
+      <div className="card-gradient-border relative flex flex-col gap-6 p-6 sm:flex-row">
+        {demon.extreme_demon_icon_url && (
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-20 transition duration-500"
+            style={{ backgroundImage: `url(${demon.extreme_demon_icon_url})` }}
+          />
+        )}
+        <div className="relative h-48 w-full flex-none overflow-hidden rounded-xl bg-base-800 sm:w-72">
           {demon.thumbnail_url ? (
             <img src={demon.thumbnail_url} alt={demon.name} className="h-full w-full object-cover" />
           ) : (

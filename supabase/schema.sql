@@ -371,20 +371,32 @@ begin
   if from_position = to_position then
     return;
   end if;
-  
+
   if from_position < to_position then
+    update public.demons
+    set position = -position
+    where position = from_position;
+
     update public.demons
     set position = position - 1
     where position > from_position and position <= to_position;
+
+    update public.demons
+    set position = to_position
+    where position = -from_position;
   else
+    update public.demons
+    set position = -position
+    where position = from_position;
+
     update public.demons
     set position = position + 1
     where position >= to_position and position < from_position;
+
+    update public.demons
+    set position = to_position
+    where position = -from_position;
   end if;
-  
-  update public.demons
-  set position = to_position
-  where position = from_position;
 end;
 $$;
 

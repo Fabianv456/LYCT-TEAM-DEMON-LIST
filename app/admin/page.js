@@ -98,11 +98,10 @@ export default function AdminPage() {
           .maybeSingle();
 
         if (conflict) {
-          await supabase
-            .from("demons")
-            .update({ position: supabase.raw(`position + 1`) })
-            .gte("position", newPosition)
-            .neq("id", demonId);
+          await supabase.rpc("reorder_demons", {
+            from_position: newPosition,
+            to_position: newPosition + 1,
+          });
         }
       }
     } catch (err) {
