@@ -45,7 +45,7 @@ alter table public.demons add column if not exists background_url text;
 alter table public.demons add column if not exists extreme_demon_icon_url text;
 alter table public.demons add column if not exists points int not null default 100;
 
-create unique index if not exists demons_position_idx on public.demons(position);
+create index if not exists demons_position_idx on public.demons(position);
 create index if not exists demons_name_idx on public.demons(name);
 
 -- ---------- TABLA: submissions ----------
@@ -355,6 +355,10 @@ create trigger on_submission_points
   after update on public.submissions
   for each row execute procedure public.add_points_for_approval();
 
+drop index if exists public.demons_position_idx;
+
+create index if not exists demons_position_idx on public.demons(position);
+
 create or replace function public.reorder_demons(from_position int, to_position int)
 returns void
 language plpgsql
@@ -367,17 +371,29 @@ begin
 
   if from_position < to_position then
     update public.demons
+    set position = -position
+    where position = from_position;
+
+    update public.demons
     set position = position - 1
     where position > from_position and position <= to_position;
+
+    update public.demons
+    set position = to_position
+    where position = -from_position;
   else
+    update public.demons
+    set position = -position
+    where position = from_position;
+
     update public.demons
     set position = position + 1
     where position >= to_position and position < from_position;
-  end if;
 
-  update public.demons
-  set position = to_position
-  where position = from_position;
+    update public.demons
+    set position = to_position
+    where position = -from_position;
+  end if;
 end;
 $$;
 
@@ -631,3 +647,14 @@ update public.profiles set role = 'admin' where username = 'fabb';
 update public.demons
 set extreme_demon_icon_url = 'https://znezztvtzlvhvgdamhcz.supabase.co/storage/v1/object/public/demon-images/extreme_demon_icon_url.png'
 where extreme_demon_icon_url is null;
+
+-- Corrige duplicados de posición si existen
+WITH duplicates AS (
+  SELECT id, position,
+         ROW_NUMBER() OVER (PARTITION BY position ORDER BY created_at) AS rn
+  FROM public.demons
+)
+UPDATE public.demons d
+SET position = (SELECT COALESCE(MAX(position), 0) + 1 FROM public.demons)
+FROM duplicates dup
+WHERE d.id = dup.id AND dup.rn > 1;
