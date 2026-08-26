@@ -359,46 +359,51 @@ drop index if exists public.demons_position_idx;
 
 create index if not exists demons_position_idx on public.demons(position);
 
-create or replace function public.reorder_demons(from_position int, to_position int)
+create or replace function public.reorder_demons(demon_id uuid, new_position int)
 returns void
 language plpgsql
 security definer
 as $$
+declare
+  current_position int;
 begin
-  if from_position = to_position then
+  if not exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role = 'admin'
+  ) then
+    raise exception 'Solo los administradores pueden reordenar niveles';
+  end if;
+
+  select position into current_position
+  from public.demons
+  where id = demon_id;
+
+  if current_position is null then
+    raise exception 'Nivel no encontrado';
+  end if;
+
+  if current_position = new_position then
     return;
   end if;
 
-  if from_position < to_position then
-    update public.demons
-    set position = -position
-    where position = from_position;
-
+  if current_position < new_position then
     update public.demons
     set position = position - 1
-    where position > from_position and position <= to_position;
-
-    update public.demons
-    set position = to_position
-    where position = -from_position;
+    where position > current_position and position <= new_position;
   else
     update public.demons
-    set position = -position
-    where position = from_position;
-
-    update public.demons
     set position = position + 1
-    where position >= to_position and position < from_position;
-
-    update public.demons
-    set position = to_position
-    where position = -from_position;
+    where position >= new_position and position < current_position;
   end if;
+
+  update public.demons
+  set position = new_position
+  where id = demon_id;
 end;
 $$;
 
-revoke all on function public.reorder_demons(int, int) from public, anon, authenticated;
-grant execute on function public.reorder_demons(int, int) to authenticated;
+revoke all on function public.reorder_demons(uuid, int) from public, anon, authenticated;
+grant execute on function public.reorder_demons(uuid, int) to authenticated;
 
 create or replace function public.enforce_single_primary_image()
 returns trigger
@@ -635,26 +640,5 @@ create policy "Usuario o staff puede crear notas"
 -- DATOS DE EJEMPLO (opcional, bórralo si no lo quieres)
 -- =========================================================
 
-insert into public.demons (position, name, creator, level_id, difficulty, thumbnail_url, points)
-values
-  (1, 'Tidal Wave', 'OniLink', '54332187', 'Extreme Demon', null, 100),
-  (2, 'Acheron', 'Zoink', '78900123', 'Extreme Demon', null, 100),
-  (3, 'Slaughterhouse', 'Vermillion', '65432109', 'Extreme Demon', null, 100)
-on conflict do nothing;
-
-update public.profiles set role = 'admin' where username = 'fabb';
-
-update public.demons
-set extreme_demon_icon_url = 'https://znezztvtzlvhvgdamhcz.supabase.co/storage/v1/object/public/demon-images/extreme_demon_icon_url.png'
-where extreme_demon_icon_url is null;
-
--- Corrige duplicados de posición si existen
-WITH duplicates AS (
-  SELECT id, position,
-         ROW_NUMBER() OVER (PARTITION BY position ORDER BY created_at) AS rn
-  FROM public.demons
-)
-UPDATE public.demons d
-SET position = (SELECT COALESCE(MAX(position), 0) + 1 FROM public.demons)
-FROM duplicates dup
-WHERE d.id = dup.id AND dup.rn > 1;
+-- No insertar datos de ejemplo automáticamente
+-- Podés insertar tus propios niveles manualmente desde /admin

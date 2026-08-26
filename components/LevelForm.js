@@ -125,13 +125,13 @@ export default function LevelForm({ demon, onSuccess, onCreated, onCancel, initi
       if (isEdit) {
         const { error } = await supabase.from("demons").update(payload).eq("id", demon.id);
         if (error) throw error;
-        onSuccess?.({ demonId: demon.id, previousPosition, newPosition: positionNum });
+        onSuccess?.({ demonId: demon.id, newPosition: positionNum });
       } else {
         const { data, error } = await supabase.from("demons").insert(payload).select("id").single();
         if (error) throw error;
         onCreated?.(data);
         onThumbnailChange?.(null);
-        onSuccess?.({ demonId: data.id, previousPosition: null, newPosition: positionNum });
+        onSuccess?.({ demonId: data.id, newPosition: positionNum });
       }
     } catch (err) {
       setError(err.message || "Error al guardar el nivel.");
