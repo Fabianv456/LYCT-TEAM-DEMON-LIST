@@ -247,8 +247,18 @@ export default function AdminPage() {
                 className="card-gradient-border p-4 transition"
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-accent-gradient font-display text-lg font-bold text-white shadow-glow">
-                    #{demon.position}
+                  <div className="flex h-12 w-16 flex-none items-center justify-center rounded-xl bg-accent-gradient font-display text-lg font-bold text-white shadow-glow">
+                    <input
+                      type="number"
+                      value={demon.position}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        if (!Number.isInteger(val) || val < 1) return;
+                        supabase.from("demons").update({ position: val }).eq("id", demon.id);
+                      }}
+                      onBlur={() => loadDemons()}
+                      className="w-12 bg-transparent text-center outline-none"
+                    />
                   </div>
                   <div className="h-16 w-28 flex-none overflow-hidden rounded-lg bg-base-800">
                     {demon.thumbnail_url ? (
