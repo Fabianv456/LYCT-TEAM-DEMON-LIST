@@ -275,10 +275,10 @@ export default function SubmitPage() {
             {userSubmissions.map((s) => {
               const demon = demons.find((d) => d.id === s.demon_id);
               return (
-                 <div
-                   key={s.id}
-                   className="card-gradient-border relative overflow-hidden px-4 py-3 transition"
-                 >
+                <div
+                  key={s.id}
+                  className="card-gradient-border relative overflow-hidden px-4 py-3 transition"
+                >
                   {demon?.background_url && (
                     <div
                       className="absolute inset-0 bg-cover bg-center opacity-20"
@@ -287,7 +287,7 @@ export default function SubmitPage() {
                   )}
                   <div className="relative flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <div className="h-20 w-28 flex-none overflow-hidden rounded-lg bg-base-800">
+                      <div className="h-16 w-16 flex-none overflow-hidden rounded-lg bg-base-800">
                         {demon?.thumbnail_url ? (
                           <img src={demon.thumbnail_url} alt={demon?.name || "Demon"} className="h-full w-full object-cover" />
                         ) : (
