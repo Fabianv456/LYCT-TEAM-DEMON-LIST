@@ -126,6 +126,7 @@ export default function SubmitPage() {
     approved: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
     rejected: "border-accent-red/40 bg-accent-red/10 text-accent-red",
   };
+  const statusLabels = { pending: "Pendiente", approved: "Aprobado", rejected: "Rechazado" };
 
   return (
     <div className="mx-auto max-w-2xl animate-fade-in space-y-6">
@@ -258,7 +259,7 @@ export default function SubmitPage() {
             Todavía no has enviado ninguna completion.
           </p>
         ) : (
-          <div className="space-y-2">
+          <div className="grid gap-2">
             {userSubmissions.map((s) => {
               const demon = demons.find((d) => d.id === s.demon_id);
               return (
@@ -266,16 +267,25 @@ export default function SubmitPage() {
                    key={s.id}
                    className="card-gradient-border flex items-center justify-between px-4 py-3 transition"
                  >
-                  <div>
-                    <p className="text-sm text-white">
-                      #{demon?.position || "?"} {demon?.name || "Demon desconocido"}
-                    </p>
-                    <p className="text-xs text-zinc-500">
-                      {new Date(s.created_at).toLocaleDateString()}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 flex-none overflow-hidden rounded-lg bg-base-800">
+                      {demon?.thumbnail_url ? (
+                        <img src={demon.thumbnail_url} alt={demon?.name} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-xs text-zinc-600">Sin img</div>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm text-white">
+                        #{demon?.position || "?"} {demon?.name || "Demon desconocido"}
+                      </p>
+                      <p className="text-xs text-zinc-500">
+                        {new Date(s.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
                   <span className={`rounded-full border px-3 py-1 text-xs font-medium capitalize ${statusStyles[s.status] || "border-base-700 text-zinc-400"}`}>
-                    {s.status}
+                    {statusLabels[s.status] || s.status}
                   </span>
                 </div>
               );
