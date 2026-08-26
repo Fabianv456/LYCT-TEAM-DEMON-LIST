@@ -11,6 +11,7 @@ export default function LevelForm({ demon, onSuccess, onCreated, onCancel, initi
   const supabase = supabaseBrowser();
 
   const isEdit = !!demon;
+  const previousPosition = demon?.position || null;
   const [form, setForm] = useState({
     name: demon?.name || "",
     creator: demon?.creator || "",
@@ -124,14 +125,14 @@ export default function LevelForm({ demon, onSuccess, onCreated, onCancel, initi
       if (isEdit) {
         const { error } = await supabase.from("demons").update(payload).eq("id", demon.id);
         if (error) throw error;
+        onSuccess?.({ demonId: demon.id, previousPosition, newPosition: positionNum });
       } else {
         const { data, error } = await supabase.from("demons").insert(payload).select("id").single();
         if (error) throw error;
         onCreated?.(data);
         onThumbnailChange?.(null);
+        onSuccess?.({ demonId: data.id, previousPosition: null, newPosition: positionNum });
       }
-
-      onSuccess?.();
     } catch (err) {
       setError(err.message || "Error al guardar el nivel.");
     } finally {

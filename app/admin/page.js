@@ -78,9 +78,37 @@ export default function AdminPage() {
     setSuccess("");
   }
 
-  async function handleSuccess() {
-    setSuccess(selectedId ? "Nivel actualizado correctamente." : "Nivel creado correctamente.");
+  async function handleSuccess({ demonId, previousPosition, newPosition }) {
+    setSuccess(demonId && selectedId === demonId ? "Nivel actualizado correctamente." : "Nivel creado correctamente.");
     setError("");
+
+    try {
+      if (previousPosition && newPosition && previousPosition !== newPosition) {
+        await supabase.rpc("reorder_demons", {
+          from_position: previousPosition,
+          to_position: newPosition,
+        });
+      } else if (!previousPosition && newPosition && demonId) {
+        const { data: conflict } = await supabase
+          .from("demons")
+          .select("id")
+          .eq("position", newPosition)
+          .neq("id", demonId)
+          .limit(1)
+          .maybeSingle();
+
+        if (conflict) {
+          await supabase
+            .from("demons")
+            .update({ position: supabase.raw(`position + 1`) })
+            .gte("position", newPosition)
+            .neq("id", demonId);
+        }
+      }
+    } catch (err) {
+      setError("Guardado, pero error al reordenar: " + (err.message || err));
+    }
+
     await loadDemons();
     setTimeout(() => setSuccess(""), 3000);
   }
