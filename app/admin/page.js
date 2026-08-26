@@ -225,41 +225,24 @@ export default function AdminPage() {
     const toIndex = dragOverItem.current;
     if (fromIndex === null || toIndex === null || fromIndex === toIndex) return;
 
-    const fromDemon = filtered[fromIndex];
-    const toDemon = filtered[toIndex];
-    if (!fromDemon || !toDemon) return;
+    const source = filtered[fromIndex];
+    const target = filtered[toIndex];
+    if (!source || !target) return;
 
     setReordering(true);
     try {
-      const newPosition = toDemon.position;
-      const oldPosition = fromDemon.position;
+      const next = [...demons];
+      const currentIdx = next.findIndex((d) => d.id === source.id);
+      const overIdx = next.findIndex((d) => d.id === target.id);
+      if (currentIdx === -1 || overIdx === -1) throw new Error("No se encontraron los niveles para reordenar.");
 
-      if (oldPosition === newPosition) {
-        setReordering(false);
-        dragItem.current = null;
-        dragOverItem.current = null;
-        return;
-      }
+      const [moved] = next.splice(currentIdx, 1);
+      next.splice(overIdx, 0, moved);
 
-      const updatedDemons = demons.map((d) => {
-        if (d.id === fromDemon.id) {
-          return { ...d, position: newPosition };
-        }
-        if (oldPosition < newPosition) {
-          if (d.position > oldPosition && d.position <= newPosition) {
-            return { ...d, position: d.position - 1 };
-          }
-        } else {
-          if (d.position >= newPosition && d.position < oldPosition) {
-            return { ...d, position: d.position + 1 };
-          }
-        }
-        return d;
+      const updates = next.map((d, idx) => {
+        const position = idx + 1;
+        return supabase.from("demons").update({ position }).eq("id", d.id);
       });
-
-      const updates = updatedDemons.map((d) =>
-        supabase.from("demons").update({ position: d.position }).eq("id", d.id)
-      );
 
       await Promise.all(updates);
       await loadDemons();
